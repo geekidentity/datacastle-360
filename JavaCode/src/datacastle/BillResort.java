@@ -1,4 +1,4 @@
-package inforStatistic;
+package datacastle;
 
 import java.util.ArrayList;
 import java.util.Collections;

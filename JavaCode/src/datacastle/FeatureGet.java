@@ -1,4 +1,4 @@
-package inforStatistic;
+package datacastle;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,10 +16,10 @@ public class FeatureGet
 	public static void main(String [] argv) throws IOException
 	{
 		
-		String trainPath = "D:/SLaughter_code/RawData/";
-		String testPath = "D:/SLaughter_code/RawData/";
+		String trainPath = "../data/train/";
+		String testPath = "../data/test/";
 		
-		String  CharacterFilePath = "D:/SLaughter_code/CharacterFile/";
+		String  CharacterFilePath = "../result/CharacterFile/";
 		  
 		// 合并同一笔工资收入、非工资收入和支出记录
 		Data_clean.combineBankRecord(trainPath+"bank_detail_train.txt",CharacterFilePath+"combine_bank_detail_train.txt");
@@ -30,12 +30,12 @@ public class FeatureGet
 		Data_clean.deleteRepeatRecord(testPath+"bill_detail_test.txt",CharacterFilePath+"clean_bill_detail_test.txt");	
 	
 		
-		String tempFilePath = "D:/SLaughter_code/RawData/GenerateFile/";
+		String tempFilePath = "../temp/";
 		
 		
 		
-		String   TrainResultPath = "D:/SLaughter_code/CharacterFile/";
-		String   GenerateFilePath ="D:/SLaughter_code/GenerateFile/";
+		String   TrainResultPath = "../result/CharacterFile/";
+		String   GenerateFilePath ="../result/GenerateFile/";
 		
 		File file2=new File(TrainResultPath+"onlineTrain.csv");                                     // 写入训练集合并特征 
 		FileWriter fw =  new FileWriter(file2);

@@ -1,4 +1,4 @@
-package inforStatistic;
+package datacastle;
 //用户的基本属性 userInfo : 用户id,性别,职业,教育程度,婚姻状态,户口类型
 class userInfo
 {

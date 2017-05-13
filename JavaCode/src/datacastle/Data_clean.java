@@ -1,4 +1,4 @@
-package inforStatistic;
+package datacastle;
 /*
  * CleanData类 作用： 清洗数据，去掉训练集和测试集中的冗余数据！
  */
