@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import datacastle.model.BillDetail;
+
 public class Data_clean {
 	// public static long repeatBills = 0L;
 	// public static long relativeCount = 0L;
@@ -53,7 +55,7 @@ public class Data_clean {
 	}
 
 	public static void billPerBank(String billFile, String billPerBankFile) throws IOException {
-		HashMap<String, ArrayList<billDetail>> billDetailList = new HashMap<String, ArrayList<billDetail>>(); // 每个用户对应的银行记录清单
+		HashMap<String, ArrayList<BillDetail>> BillDetailList = new HashMap<String, ArrayList<BillDetail>>(); // 每个用户对应的银行记录清单
 
 		File file = new File(billFile);
 		BufferedReader reader = null;
@@ -68,33 +70,33 @@ public class Data_clean {
 
 		while ((tempString = reader.readLine()) != null) {
 			String[] temp = tempString.split(",");
-			ArrayList<billDetail> tempList;
+			ArrayList<BillDetail> tempList;
 
-			if ((tempList = billDetailList.get(temp[0])) == null) {
-				tempList = new ArrayList<billDetail>();
+			if ((tempList = BillDetailList.get(temp[0])) == null) {
+				tempList = new ArrayList<BillDetail>();
 			}
 
-			tempList.add(new billDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
+			tempList.add(new BillDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
 					Float.valueOf(temp[3]), Float.valueOf(temp[4]), Float.valueOf(temp[5]), Float.valueOf(temp[6]),
 					Float.valueOf(temp[7]), Integer.valueOf(temp[8]), Float.valueOf(temp[9]), Float.valueOf(temp[10]),
 					Float.valueOf(temp[11]), Float.valueOf(temp[12]), Float.valueOf(temp[13]),
 					Integer.valueOf(temp[14])));
-			billDetailList.put(temp[0], tempList);
+			BillDetailList.put(temp[0], tempList);
 		}
 		reader.close();
 
-		Iterator iter = billDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
+		Iterator iter = BillDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String key = (String) entry.getKey();
-			ArrayList<billDetail> val = (ArrayList<billDetail>) entry.getValue();
-			HashMap<Integer, ArrayList<billDetail>> billMap = new HashMap<Integer, ArrayList<billDetail>>(); // 分银行统计属性
-			Iterator<billDetail> it = val.iterator();
+			ArrayList<BillDetail> val = (ArrayList<BillDetail>) entry.getValue();
+			HashMap<Integer, ArrayList<BillDetail>> billMap = new HashMap<Integer, ArrayList<BillDetail>>(); // 分银行统计属性
+			Iterator<BillDetail> it = val.iterator();
 			while (it.hasNext()) {
-				billDetail tempDetail = it.next();
-				ArrayList<billDetail> billListOfEachBank; // 一个银行的信用账单记录
+				BillDetail tempDetail = it.next();
+				ArrayList<BillDetail> billListOfEachBank; // 一个银行的信用账单记录
 				if ((billListOfEachBank = billMap.get(tempDetail.bankID)) == null)
-					billListOfEachBank = new ArrayList<billDetail>();
+					billListOfEachBank = new ArrayList<BillDetail>();
 				billListOfEachBank.add(tempDetail);
 				billMap.put(tempDetail.bankID, billListOfEachBank);
 			}
@@ -102,8 +104,8 @@ public class Data_clean {
 			while (iter2.hasNext()) {
 				Map.Entry entry2 = (Map.Entry) iter2.next();
 				Integer key2 = (Integer) entry2.getKey();
-				ArrayList<billDetail> value = (ArrayList<billDetail>) entry2.getValue();
-				ArrayList<billDetail> clean_value = cleanRepeatBill(BillResort.cleanAndfill(value));
+				ArrayList<BillDetail> value = (ArrayList<BillDetail>) entry2.getValue();
+				ArrayList<BillDetail> clean_value = cleanRepeatBill(BillResort.cleanAndfill(value));
 				// BillResort.cleanAndfill(value);
 				// 二次清洗账单数据后的账单时间戳填充
 				for (int i = 0; i < clean_value.size(); i++)
@@ -115,8 +117,8 @@ public class Data_clean {
 	}
 
 	// 函数功能 ：去除冗余账单数据
-	public static ArrayList<billDetail> cleanRepeatBill(ArrayList<billDetail> billList) {
-		ArrayList<billDetail> resultBillList = new ArrayList<billDetail>();
+	public static ArrayList<BillDetail> cleanRepeatBill(ArrayList<BillDetail> billList) {
+		ArrayList<BillDetail> resultBillList = new ArrayList<BillDetail>();
 		HashSet<String> billSet = new HashSet<String>();
 		for (int i = 0; i < billList.size(); i++) {
 			if (!billSet.contains(billList.get(i).toString())) {
@@ -128,11 +130,11 @@ public class Data_clean {
 	}
 
 	// 函数功能 ：去掉Zombie账户
-	public static int zombieBank(int bankId, ArrayList<billDetail> billList) {
+	public static int zombieBank(int bankId, ArrayList<BillDetail> billList) {
 		int blankCount = 0;
 		for (int i = 0; i < billList.size(); i++) // 判断是否为Zombie账户，从来没有过欠款、还款和消费行为
 		{
-			billDetail curBillDetail = billList.get(i);
+			BillDetail curBillDetail = billList.get(i);
 			if (curBillDetail.lastBill == 0 && curBillDetail.lastReturn == 0 && curBillDetail.thisBillRest == 0
 					&& curBillDetail.consume == 0 && curBillDetail.thisBill == 0 && curBillDetail.adjustMoney == 0
 					&& curBillDetail.cycleInterest == 0 && curBillDetail.borrowMoney == 0
@@ -233,7 +235,7 @@ public class Data_clean {
 			String key = new String();
 			for (int i = 0; i < temp.length; i++) {
 				// key = new
-				// billDetail(temp[0],Long.valueOf(temp[1]),Integer.valueOf(temp[2]),Float.valueOf(temp[3]),Float.valueOf(temp[4]),
+				// BillDetail(temp[0],Long.valueOf(temp[1]),Integer.valueOf(temp[2]),Float.valueOf(temp[3]),Float.valueOf(temp[4]),
 				// Float.valueOf(temp[5]),Float.valueOf(temp[6]),Float.valueOf(temp[7]),Integer.valueOf(temp[8]),Float.valueOf(temp[9]),
 				// Float.valueOf(temp[10]),Float.valueOf(temp[11]),Float.valueOf(temp[12]),Float.valueOf(temp[13]),Integer.valueOf(temp[14])).toString();
 

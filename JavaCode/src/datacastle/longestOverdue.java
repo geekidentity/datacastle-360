@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import datacastle.model.BillDetail;
+
 public class longestOverdue {
 
 	public static void main(String[] argv) throws IOException {
@@ -189,7 +191,7 @@ public class longestOverdue {
 	}
 
 	public static ArrayList<String> billPerBank(String billFile, String billPerBankFile) throws IOException {
-		HashMap<String, ArrayList<billDetail>> billDetailList = new HashMap<String, ArrayList<billDetail>>(); // 每个用户对应的银行记录清单
+		HashMap<String, ArrayList<BillDetail>> BillDetailList = new HashMap<String, ArrayList<BillDetail>>(); // 每个用户对应的银行记录清单
 		ArrayList<String> resultString = new ArrayList<String>();
 
 		// HashMap<Long,Long> defaultTimeStart = defaultTimeStart(billFile); //
@@ -208,17 +210,17 @@ public class longestOverdue {
 
 		while ((tempString = reader.readLine()) != null) {
 			String[] temp = tempString.split(",");
-			ArrayList<billDetail> tempList;
+			ArrayList<BillDetail> tempList;
 
-			if ((tempList = billDetailList.get(temp[0])) == null)
-				tempList = new ArrayList<billDetail>();
+			if ((tempList = BillDetailList.get(temp[0])) == null)
+				tempList = new ArrayList<BillDetail>();
 
-			tempList.add(new billDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
+			tempList.add(new BillDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
 					Float.valueOf(temp[3]), Float.valueOf(temp[4]), Float.valueOf(temp[5]), Float.valueOf(temp[6]),
 					Float.valueOf(temp[7]), Integer.valueOf(temp[8]), Float.valueOf(temp[9]), Float.valueOf(temp[10]),
 					Float.valueOf(temp[11]), Float.valueOf(temp[12]), Float.valueOf(temp[13]),
 					Integer.valueOf(temp[14])));
-			billDetailList.put(temp[0], tempList);
+			BillDetailList.put(temp[0], tempList);
 		}
 		reader.close();
 
@@ -226,21 +228,21 @@ public class longestOverdue {
 				+ "finishTime,timeDiffer,longestOverdue\n";
 		writer.write(tilte);
 
-		Iterator iter = billDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
+		Iterator iter = BillDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String key = (String) entry.getKey();
-			ArrayList<billDetail> val = (ArrayList<billDetail>) entry.getValue();
-			HashMap<Integer, ArrayList<billDetail>> billMap = new HashMap<Integer, ArrayList<billDetail>>(); // 分银行统计属性
+			ArrayList<BillDetail> val = (ArrayList<BillDetail>) entry.getValue();
+			HashMap<Integer, ArrayList<BillDetail>> billMap = new HashMap<Integer, ArrayList<BillDetail>>(); // 分银行统计属性
 
 			// 不分银行的统计量 时间聚合和时间串联！！！！
 
-			Iterator<billDetail> it = val.iterator();
+			Iterator<BillDetail> it = val.iterator();
 			while (it.hasNext()) {
-				billDetail tempDetail = it.next();
-				ArrayList<billDetail> billListOfEachBank; // 一个银行的信用账单记录
+				BillDetail tempDetail = it.next();
+				ArrayList<BillDetail> billListOfEachBank; // 一个银行的信用账单记录
 				if ((billListOfEachBank = billMap.get(tempDetail.bankID)) == null)
-					billListOfEachBank = new ArrayList<billDetail>();
+					billListOfEachBank = new ArrayList<BillDetail>();
 				billListOfEachBank.add(tempDetail);
 				billMap.put(tempDetail.bankID, billListOfEachBank);
 			}
@@ -252,7 +254,7 @@ public class longestOverdue {
 				Map.Entry entry2 = (Map.Entry) iter2.next();
 				Integer key2 = (Integer) entry2.getKey();
 
-				ArrayList<billDetail> value = (ArrayList<billDetail>) entry2.getValue();
+				ArrayList<BillDetail> value = (ArrayList<BillDetail>) entry2.getValue();
 
 				// 账单去重以及时间戳补齐后再进行统计!!!!
 
@@ -281,14 +283,14 @@ public class longestOverdue {
 		return resultString;
 	}
 
-	public static ArrayList<billDetail> cleanRepeatBill(ArrayList<billDetail> billList) {
+	public static ArrayList<BillDetail> cleanRepeatBill(ArrayList<BillDetail> billList) {
 		return null;
 	}
 
 	// 统计每张银行下的信用卡记录时，需要清洗去重、时间戳的补齐，离群点的处理
 	public static ArrayList<String> GBPerBank(String billFile, String billPerBankFile) throws IOException {
 		// 每个用户对应的银行记录清单
-		HashMap<String, ArrayList<billDetail>> billDetailList = new HashMap<String, ArrayList<billDetail>>();
+		HashMap<String, ArrayList<BillDetail>> BillDetailList = new HashMap<String, ArrayList<BillDetail>>();
 		ArrayList<String> resultString = new ArrayList<String>();
 
 		File file = new File(billFile);
@@ -304,34 +306,34 @@ public class longestOverdue {
 
 		while ((tempString = reader.readLine()) != null) {
 			String[] temp = tempString.split(",");
-			ArrayList<billDetail> tempList;
+			ArrayList<BillDetail> tempList;
 
-			if ((tempList = billDetailList.get(temp[0])) == null) {
-				tempList = new ArrayList<billDetail>();
+			if ((tempList = BillDetailList.get(temp[0])) == null) {
+				tempList = new ArrayList<BillDetail>();
 			}
 
-			tempList.add(new billDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
+			tempList.add(new BillDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
 					Float.valueOf(temp[3]), Float.valueOf(temp[4]), Float.valueOf(temp[5]), Float.valueOf(temp[6]),
 					Float.valueOf(temp[7]), Integer.valueOf(temp[8]), Float.valueOf(temp[9]), Float.valueOf(temp[10]),
 					Float.valueOf(temp[11]), Float.valueOf(temp[12]), Float.valueOf(temp[13]),
 					Integer.valueOf(temp[14])));
-			billDetailList.put(temp[0], tempList);
+			BillDetailList.put(temp[0], tempList);
 		}
 		reader.close();
 
-		Iterator iter = billDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
+		Iterator iter = BillDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String key = (String) entry.getKey();
-			ArrayList<billDetail> val = (ArrayList<billDetail>) entry.getValue();
-			HashMap<Integer, ArrayList<billDetail>> billMap = new HashMap<Integer, ArrayList<billDetail>>(); // 分银行统计属性
+			ArrayList<BillDetail> val = (ArrayList<BillDetail>) entry.getValue();
+			HashMap<Integer, ArrayList<BillDetail>> billMap = new HashMap<Integer, ArrayList<BillDetail>>(); // 分银行统计属性
 
-			Iterator<billDetail> it = val.iterator();
+			Iterator<BillDetail> it = val.iterator();
 			while (it.hasNext()) {
-				billDetail tempDetail = it.next();
-				ArrayList<billDetail> billListOfEachBank; // 一个银行的信用账单记录
+				BillDetail tempDetail = it.next();
+				ArrayList<BillDetail> billListOfEachBank; // 一个银行的信用账单记录
 				if ((billListOfEachBank = billMap.get(tempDetail.bankID)) == null)
-					billListOfEachBank = new ArrayList<billDetail>();
+					billListOfEachBank = new ArrayList<BillDetail>();
 				billListOfEachBank.add(tempDetail);
 				billMap.put(tempDetail.bankID, billListOfEachBank);
 			}
@@ -340,7 +342,7 @@ public class longestOverdue {
 			while (iter2.hasNext()) {
 				Map.Entry entry2 = (Map.Entry) iter2.next();
 				Integer key2 = (Integer) entry2.getKey();
-				ArrayList<billDetail> value = (ArrayList<billDetail>) entry2.getValue();
+				ArrayList<BillDetail> value = (ArrayList<BillDetail>) entry2.getValue();
 
 				for (int i = 0; i < value.size(); i++) // 返回用户所有银行下的时间属性
 					writer.write(value.get(i) + "\n");
@@ -352,11 +354,11 @@ public class longestOverdue {
 	}
 
 	// 第一步 : 计算该账户(银行)是否为"僵尸账户"
-	public static long deadBank(int bankId, ArrayList<billDetail> billList) // 判断该银行是否为“僵尸"账户，没有欠款和还款行为
+	public static long deadBank(int bankId, ArrayList<BillDetail> billList) // 判断该银行是否为“僵尸"账户，没有欠款和还款行为
 	{
 		int blankCount = 0;
 		for (int i = 0; i < billList.size(); i++) {
-			billDetail curBillDetail = billList.get(i);
+			BillDetail curBillDetail = billList.get(i);
 			if (curBillDetail.lastBill == 0 && curBillDetail.lastReturn == 0 && curBillDetail.thisBillRest == 0
 					&& curBillDetail.consume == 0 && curBillDetail.thisBill == 0 && curBillDetail.adjustMoney == 0
 					&& curBillDetail.cycleInterest == 0 && curBillDetail.borrowMoney == 0
@@ -370,14 +372,14 @@ public class longestOverdue {
 	}
 
 	// 第二步 ： 计算账户(银行)下是否有多张信用卡
-	public static long cardsPerBankFlags(int bankId, ArrayList<billDetail> billList) // 用户在一家银行下有多少张信用卡，分别对每张卡的记录进行计算
+	public static long cardsPerBankFlags(int bankId, ArrayList<BillDetail> billList) // 用户在一家银行下有多少张信用卡，分别对每张卡的记录进行计算
 	{
 		if (billList.size() == 1)
 			return 0; // 只有一条信用账单记录，只有一张卡
 
 		for (int i = 0; i < billList.size() - 1; i++) {
-			billDetail preDetail = billList.get(i);
-			billDetail curDetail = billList.get(i + 1);
+			BillDetail preDetail = billList.get(i);
+			BillDetail curDetail = billList.get(i + 1);
 			// 相邻还款间隔应该大于 >= 28,因此一个时间戳附近多笔账单，则视为一行多卡的情况
 			if (curDetail.time != 0 && preDetail.time != 0 && (curDetail.time - preDetail.time) < 26) // 时间间隔有误差
 																										// 27可能为结账周期
@@ -387,7 +389,7 @@ public class longestOverdue {
 	}
 
 	// 第三步 ： 计算该账户(银行)下的信用卡数，恶意申请信用的用户
-	public static long cardsPerBankCounts(int bankId, ArrayList<billDetail> billList) // 计算该用户在该银行下有几张卡???
+	public static long cardsPerBankCounts(int bankId, ArrayList<BillDetail> billList) // 计算该用户在该银行下有几张卡???
 	{
 		int cardsCount = 0;
 
@@ -396,11 +398,11 @@ public class longestOverdue {
 			return 1; // 只有一张卡，相邻账单间隔 >=28
 		int i = 0;
 		for (; i < billList.size() - 1; i++) {
-			billDetail preDetail = billList.get(i);
+			BillDetail preDetail = billList.get(i);
 			if (preDetail.time != 0) // 已知账单时间戳不为0
 			{
 				for (int j = i + 1; j < billList.size(); j++) {
-					billDetail curDetail = billList.get(j);
+					BillDetail curDetail = billList.get(j);
 					if (curDetail.time != 0 && (curDetail.time - preDetail.time) >= 28)
 						return (j - i); // 最远的账单距离, 返回卡的数量
 				}
@@ -412,7 +414,7 @@ public class longestOverdue {
 	}
 
 	// 第四步： 获取该银行下用户的账单起始点和终点，目前存在的问题是：存在一行多卡，每一张信用卡的账单如何梳理出来， 中间还夹杂很多噪声！
-	public static ArrayList<Long> timeStamp(int bankId, ArrayList<billDetail> billList) {
+	public static ArrayList<Long> timeStamp(int bankId, ArrayList<BillDetail> billList) {
 		Long startTime = 0L; // 填充一张信用卡的用户最早记录时间
 		int knownIndex = 0;
 		// Long userID = Long.valueOf(billList.get(0).userID); // 用户ID编号
@@ -470,7 +472,7 @@ public class longestOverdue {
 	}
 
 	// 第四步 ： 获取用户在该银行下最长的违约时间
-	public static long getPerBank(int bankId, ArrayList<billDetail> billList) {
+	public static long getPerBank(int bankId, ArrayList<BillDetail> billList) {
 		if (billList.size() <= 1)
 			return -1; // 只有一条记录，无法知道逾期情况
 
@@ -480,8 +482,8 @@ public class longestOverdue {
 
 		for (int i = 0; i < billList.size() - 1; i++) // 考察相邻两期记录
 		{
-			billDetail preDetail = billList.get(i);
-			billDetail curDetail = billList.get(i + 1); // 前一笔账单和当前账单
+			BillDetail preDetail = billList.get(i);
+			BillDetail curDetail = billList.get(i + 1); // 前一笔账单和当前账单
 
 			if (curDetail.lastReturn != 0 && curDetail.lastBill != 0 && curDetail.lastReturn < preDetail.curLeastReturn) // 上一期逾期，则把上期时间戳作为逾期起点
 				timeSeries.add(preDetail.time);
@@ -511,14 +513,14 @@ public class longestOverdue {
 	}
 
 	// 第六步 ：用户每张卡连续还款小于最低还款的最短、最长时间跨度
-	public static long getCardsOnceTime(int bankId, ArrayList<billDetail> billList) {
+	public static long getCardsOnceTime(int bankId, ArrayList<BillDetail> billList) {
 		if (cardsPerBankFlags(bankId, billList) == 0) // 用户只有一张卡
 			return 1;
 		return 0;
 	}
 
 	// 第七步：用户还款 >= 欠款的最长和最短时间
-	public static ArrayList<Long> getMaxMinInterval(int bankId, ArrayList<billDetail> billList) {
+	public static ArrayList<Long> getMaxMinInterval(int bankId, ArrayList<BillDetail> billList) {
 		ArrayList<Long> interval = new ArrayList<Long>();
 		if (deadBank(bankId, billList) == 0) // 僵尸账户没有欠款还款时间
 		{

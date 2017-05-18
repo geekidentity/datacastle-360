@@ -6,10 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import datacastle.model.UserInfo;
 
 public class FeatureGet {
 	public static void main(String[] argv) throws IOException {
@@ -67,7 +68,7 @@ public class FeatureGet {
 			missingTimeFeature += missingCode + ",";
 		}
 
-		HashMap<Long, userInfo> userFeatureList = FeatureGet.userRecord(trainPath + "user_info_train.txt");
+		HashMap<Long, UserInfo> userFeatureList = FeatureGet.userRecord(trainPath + "user_info_train.txt");
 		HashMap<Long, String> overdueList = FeatureGet.overdueRecord(GenerateFilePath + "overdue_train.csv");
 
 		// String inforIntact =
@@ -75,7 +76,7 @@ public class FeatureGet {
 		// //信息的完整度
 		String inforIntact = "NoBank," + "YesBank," + "NoBrowse," + "YesBrowse," + "NoBill," + "YesBill,"
 				+ "combineCode," + "label\n"; // 信息的完整度
-		String title = userInfo.combineFeatureTitle() + bankFeature2.combineFeatureTitle()
+		String title = UserInfo.combineFeatureTitle() + bankFeature2.combineFeatureTitle()
 				+ browseFeature.combineFetureTitle(TopKCount) + new billFeature().combineFetureTitle() + timeTitle
 				+ inforIntact;
 		writer.write(title);
@@ -169,12 +170,12 @@ public class FeatureGet {
 		HashMap<Long, String> testtimeFeatureList = longestOverdue
 				.timeFeature(CharacterFilePath + "clean_bill_detail_test.txt", CharacterFilePath + "timeFeature.txt");
 
-		HashMap<Long, userInfo> testuserFeatureList = FeatureGet.userRecord(testPath + "user_info_test.txt");
+		HashMap<Long, UserInfo> testuserFeatureList = FeatureGet.userRecord(testPath + "user_info_test.txt");
 
 		String inforIntactTest = "NoBank," + "YesBank," + "NoBrowse," + "YesBrowse," + "NoBill," + "YesBill,"
 				+ "combineCode\n"; // 信息的完整度
 
-		String title2 = userInfo.combineFeatureTitle() + bankFeature2.combineFeatureTitle()
+		String title2 = UserInfo.combineFeatureTitle() + bankFeature2.combineFeatureTitle()
 				+ browseFeature.combineFetureTitle(TopKCount) + new billFeature().combineFetureTitle() + timeTitle
 				+ inforIntactTest;
 		writer3.write(title2);
@@ -240,8 +241,8 @@ public class FeatureGet {
 		writer3.close();
 	}
 
-	public static HashMap<Long, userInfo> userRecord(String userFile) throws IOException {
-		HashMap<Long, userInfo> userFeatureList = new HashMap<Long, userInfo>();
+	public static HashMap<Long, UserInfo> userRecord(String userFile) throws IOException {
+		HashMap<Long, UserInfo> userFeatureList = new HashMap<Long, UserInfo>();
 		File file = new File(userFile);
 		BufferedReader reader = null;
 		reader = new BufferedReader(new FileReader(file));
@@ -250,7 +251,7 @@ public class FeatureGet {
 		while ((tempString = reader.readLine()) != null) {
 			String[] temp = tempString.split(",");
 			userFeatureList.put(Long.valueOf(temp[0]),
-					new userInfo(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]));
+					new UserInfo(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]));
 		}
 		reader.close();
 		return userFeatureList;

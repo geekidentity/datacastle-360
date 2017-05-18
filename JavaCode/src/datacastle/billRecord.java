@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import datacastle.model.BillDetail;
+
 class billFeature { // 共计 维特征
 
 	// 基本信息
@@ -309,15 +311,15 @@ public class billRecord {
 		return loanTimeMap;
 	}
 
-	public static HashMap<Long, billFeature> record(String billDetailFile, String billFeatureFile, String loanTimeFile)
+	public static HashMap<Long, billFeature> record(String BillDetailFile, String billFeatureFile, String loanTimeFile)
 			throws IOException // 获取信用卡账单记录特征
 	{
 		HashMap<Long, Long> loanTimeMap = loanTime(loanTimeFile);
 
-		HashMap<String, ArrayList<billDetail>> billDetailList = new HashMap<String, ArrayList<billDetail>>(); // 每个用户对应的银行记录清单
+		HashMap<String, ArrayList<BillDetail>> BillDetailList = new HashMap<String, ArrayList<BillDetail>>(); // 每个用户对应的银行记录清单
 
 		HashMap<Long, billFeature> billFeatureList = new HashMap<Long, billFeature>();
-		File file = new File(billDetailFile);
+		File file = new File(BillDetailFile);
 		BufferedReader reader = null;
 		reader = new BufferedReader(new FileReader(file));
 		String tempString = null;
@@ -330,31 +332,31 @@ public class billRecord {
 
 		while ((tempString = reader.readLine()) != null) {
 			String[] temp = tempString.split(",");
-			ArrayList<billDetail> tempList;
+			ArrayList<BillDetail> tempList;
 
-			if ((tempList = billDetailList.get(temp[0])) == null) {
-				tempList = new ArrayList<billDetail>();
+			if ((tempList = BillDetailList.get(temp[0])) == null) {
+				tempList = new ArrayList<BillDetail>();
 			}
 
-			tempList.add(new billDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
+			tempList.add(new BillDetail(temp[0], Long.valueOf(temp[1]), Integer.valueOf(temp[2]),
 					Float.valueOf(temp[3]), Float.valueOf(temp[4]), Float.valueOf(temp[5]), Float.valueOf(temp[6]),
 					Float.valueOf(temp[7]), Integer.valueOf(temp[8]), Float.valueOf(temp[9]), Float.valueOf(temp[10]),
 					Float.valueOf(temp[11]), Float.valueOf(temp[12]), Float.valueOf(temp[13]),
 					Integer.valueOf(temp[14])));
 
-			billDetailList.put(temp[0], tempList);
-			// billDetailList.put("-1", tempList); // 缺失用户使用平均值填充
+			BillDetailList.put(temp[0], tempList);
+			// BillDetailList.put("-1", tempList); // 缺失用户使用平均值填充
 		}
 		reader.close();
 
 		writer.write(new billFeature().fetureTitle() + "\n");
 		writer.flush();
 
-		Iterator iter = billDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
+		Iterator iter = BillDetailList.entrySet().iterator(); // 遍历有银行记录的用户的交易清单
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String key = (String) entry.getKey();
-			ArrayList<billDetail> val = (ArrayList<billDetail>) entry.getValue();
+			ArrayList<BillDetail> val = (ArrayList<BillDetail>) entry.getValue();
 
 			billFeature feature = getFeatureList(val, loanTimeMap); // 银行记录提取的特征
 			billFeatureList.put(Long.valueOf(key), feature);
@@ -365,7 +367,7 @@ public class billRecord {
 		return billFeatureList;
 	}
 
-	public static billFeature getFeatureList(ArrayList<billDetail> billList, HashMap<Long, Long> loanTimeMap)
+	public static billFeature getFeatureList(ArrayList<BillDetail> billList, HashMap<Long, Long> loanTimeMap)
 			throws IOException // 一个用户的各个银行下的账单清单
 	{
 		billFeature resultBill = new billFeature();
@@ -374,20 +376,20 @@ public class billRecord {
 		ArrayList<Integer> bankDistribution = getMainBank(); // 银行分布情况
 
 		ArrayList<Float> useYears = new ArrayList<Float>(); // 每个账户的使用年限
-		HashMap<Integer, ArrayList<billDetail>> billMap = new HashMap<Integer, ArrayList<billDetail>>(); // 分银行统计属性
+		HashMap<Integer, ArrayList<BillDetail>> billMap = new HashMap<Integer, ArrayList<BillDetail>>(); // 分银行统计属性
 
-		Iterator<billDetail> it = billList.iterator();
+		Iterator<BillDetail> it = billList.iterator();
 		while (it.hasNext()) {
-			billDetail tempDetail = it.next();
+			BillDetail tempDetail = it.next();
 
 			if (bankIndex(bankDistribution, tempDetail.bankID) == -1)
 				resultBill.bankDistribution[14]++;
 			else
 				resultBill.bankDistribution[bankIndex(bankDistribution, tempDetail.bankID)]++; // 每个银行下的账单的分布情况
 
-			ArrayList<billDetail> billListOfEachBank; // 一个银行的信用账单记录
+			ArrayList<BillDetail> billListOfEachBank; // 一个银行的信用账单记录
 			if ((billListOfEachBank = billMap.get(tempDetail.bankID)) == null)
-				billListOfEachBank = new ArrayList<billDetail>();
+				billListOfEachBank = new ArrayList<BillDetail>();
 			billListOfEachBank.add(tempDetail);
 			billMap.put(tempDetail.bankID, billListOfEachBank);
 		}
@@ -404,15 +406,15 @@ public class billRecord {
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			Integer key = (Integer) entry.getKey();
-			ArrayList<billDetail> value = (ArrayList<billDetail>) entry.getValue();
+			ArrayList<BillDetail> value = (ArrayList<BillDetail>) entry.getValue();
 
-			for (billDetail temp : value)
+			for (BillDetail temp : value)
 				resultBill.billTimeList.add(temp.time); // 账单时间列表
 			Collections.sort(resultBill.billTimeList);
 
 			perBankBill = getPerBank(key, value, loanTimeMap); // 每个银行下的信用账单
 
-			// ArrayList<billDetail> cleanAgain =
+			// ArrayList<BillDetail> cleanAgain =
 			// BillResort.cleanAndfill(value);
 			// perBankBill = getPerBank(key,cleanAgain,loanTimeMap); // 二次去重后的数据
 
@@ -554,7 +556,7 @@ public class billRecord {
 		return resultBill;
 	}
 
-	public static billFeature getPerBank(int bankId, ArrayList<billDetail> billList, HashMap<Long, Long> loanTimeMap)
+	public static billFeature getPerBank(int bankId, ArrayList<BillDetail> billList, HashMap<Long, Long> loanTimeMap)
 			throws IOException {
 		long userKey = Long.valueOf(billList.get(0).userID);
 		long loanTime = loanTimeMap.get(userKey); // 用户放款时间
@@ -567,7 +569,7 @@ public class billRecord {
 		billOfThisBank.billCount = billList.size();
 
 		for (int i = 0; i < billList.size(); i++) {
-			billDetail eachDetail = billList.get(i);
+			BillDetail eachDetail = billList.get(i);
 
 			billOfThisBank.totalOwing += eachDetail.lastBill;
 			billOfThisBank.totalBacking += eachDetail.lastReturn; // 在该银行下欠款和还款累加
@@ -636,8 +638,8 @@ public class billRecord {
 		// 计算有问题!!使用两重循环搜索上期账单!!
 		for (int i = 0; i < billList.size() - 1; i++) // 考察相邻两期记录
 		{
-			billDetail preDetail = billList.get(i);
-			billDetail curDetail = billList.get(i + 1); // 前一笔账单和当前账单
+			BillDetail preDetail = billList.get(i);
+			BillDetail curDetail = billList.get(i + 1); // 前一笔账单和当前账单
 
 			if (curDetail.lastReturn < preDetail.curLeastReturn) // 上期还款 <
 																	// 上期最低还款 ，
