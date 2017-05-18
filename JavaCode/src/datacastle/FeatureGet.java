@@ -21,15 +21,15 @@ public class FeatureGet {
 		String CharacterFilePath = "../result/CharacterFile/";
 
 		// 合并同一笔工资收入、非工资收入和支出记录
-		Data_clean.combineBankRecord(trainPath + "bank_detail_train.txt",
+		DataClean.combineBankRecord(trainPath + "bank_detail_train.txt",
 				CharacterFilePath + "combine_bank_detail_train.txt");
-		Data_clean.combineBankRecord(testPath + "bank_detail_test.txt",
+		DataClean.combineBankRecord(testPath + "bank_detail_test.txt",
 				CharacterFilePath + "combine_bank_detail_test.txt");
 
 		// 训练集 && 测试集:账单记录、浏览行为记录、银行流水记录去除重复数据
-		Data_clean.deleteRepeatRecord(trainPath + "bill_detail_train.txt",
+		DataClean.deleteRepeatRecord(trainPath + "bill_detail_train.txt",
 				CharacterFilePath + "clean_bill_detail_train.txt");
-		Data_clean.deleteRepeatRecord(testPath + "bill_detail_test.txt",
+		DataClean.deleteRepeatRecord(testPath + "bill_detail_test.txt",
 				CharacterFilePath + "clean_bill_detail_test.txt");
 
 		String tempFilePath = "../temp/";

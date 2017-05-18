@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Feb  4 22:13:55 2017
 
-@author: zhanghuijfls
 """
 
 import lightgbm as xgb
