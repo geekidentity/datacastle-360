@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+银行流水特征
 Created on Fri Jan 13 15:15:59 2017
 
 @author: zhanghuijfls
@@ -7,11 +8,13 @@ Created on Fri Jan 13 15:15:59 2017
 
 import pandas as pd
 
-train = pd.read_csv('D:/SLaughter_code/RawData/bank_detail_train.txt',sep=',',header=None)
+# 加载银行流水记录，并将时间转化为天为单位
+train = pd.read_csv('../data/train/bank_detail_train.txt',sep=',',header=None)
 train.columns=['id','date','trade_type','trade_num','salary']
 train['date'] = (train['date']/86400).astype(int)
 
-loan_time = pd.read_csv('D:/SLaughter_code/RawData/loan_time_train.txt',sep=',',header=None)
+# 加载放款时间信息，并将时间转化为天为单位
+loan_time = pd.read_csv('../data/train/loan_time_train.txt',sep=',',header=None)
 loan_time.columns=['id','loan_time']
 loan_time['loan_time'] = (loan_time['loan_time']/86400).astype(int)
 
@@ -256,9 +259,7 @@ train2 = pd.merge(train2, before_date_loan, on='id')
 train2 = pd.merge(train2, after_date_loan, on='id')
 train2['ab_date_loan'] = train2['after_date_loan']/(train2['before_date_loan']+1)
 
-
-
-train2.to_csv('D:/SLaughter_code/python_feature/bank_train.csv',index=None)
+train2.to_csv('../python_feature/bank_train.csv',index=None)
 
 
 

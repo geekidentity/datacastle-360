@@ -10,13 +10,13 @@ import pandas as pd
 '''
 同train
 '''
-test = pd.read_table('D:/SLaughter_code/RawData/bill_detail_test.txt',sep=',',header=-1)
+test = pd.read_table('../data/test/bill_detail_test.txt',sep=',',header=-1)
 test.columns = ['id','date','bank_id','x1','x2','x3','x4','x5','spend_num',
                  'x6','x7','x8','x9','x10','state']
 test = test.drop_duplicates()
 test['date'] =((test['date']-5800000000)/86400).astype(int)
 
-loan_time_test = pd.read_csv('D:/SLaughter_code/RawData/loan_time_test.txt',sep=',',header=-1)
+loan_time_test = pd.read_csv('../data/test/loan_time_test.txt',sep=',',header=-1)
 loan_time_test.columns = ['id','loan_time']
 loan_time_test['loan_time'] = ((loan_time_test['loan_time']-5800000000)/86400).astype(int)
 
@@ -313,13 +313,13 @@ result = pd.merge(result, ee, on='id')
 result = pd.merge(result, ff, on='id')
 result = pd.merge(result, gg, on='id')
 
-test_result = pd.read_table('D:/SLaughter_code/RawData/usersID_test.txt',sep=',',header=-1)
+test_result = pd.read_table('../data/test/usersID_test.txt',sep=',',header=-1)
 test_result.columns = ['id']
 test_result = pd.merge(test_result, result, how='left', on='id')
 test_result = pd.merge(test_result, loan_time_test, how='left', on='id')
 
 
-test_result.to_csv('D:/SLaughter_code/python_feature/test_bill_dup.csv',index=None)
+test_result.to_csv('../python_feature/test_bill_dup.csv',index=None)
 
 
 

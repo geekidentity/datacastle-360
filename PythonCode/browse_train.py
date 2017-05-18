@@ -8,12 +8,12 @@ Created on Sat Jan 14 14:21:32 2017
 import pandas as pd
 
 #载入browse数据
-train = pd.read_csv('D:/SLaughter_code/RawData/browse_history_train.txt',sep=',',header=None)
+train = pd.read_csv('../data/train/browse_history_train.txt',sep=',',header=None)
 train.columns = ['id','date','browse','browse_type']
 train['date'] = (train['date']/86400).astype(int)
 
 
-loan_time = pd.read_csv('D:/SLaughter_code/RawData/loan_time_train.txt',sep=',',header=None)
+loan_time = pd.read_csv('../data/train/loan_time_train.txt',sep=',',header=None)
 loan_time.columns=['id','loan_time']
 loan_time['loan_time'] = (loan_time['loan_time']/86400).astype(int)
 
@@ -168,7 +168,7 @@ for a in [173,45,38,50,139,164,82,120,190,101,110,189,44,167]:
     train2['top_15_num'] +=train2['browse_'+str(a)+'_size']
 
 
-train2.to_csv('D:/SLaughter_code/python_feature/browse_feature_train.csv',index=None)
+train2.to_csv('../python_feature/browse_feature_train.csv',index=None)
 
    
         

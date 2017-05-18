@@ -14,13 +14,13 @@ x8：循环利息，x9：可用余额，x10：预借现金额度
 '''
 print('--------------loan-data------------------')
 #加入bill，loan_time数据
-train = pd.read_table('D:/SLaughter_code/RawData/bill_detail_Train.txt',sep=',',header=-1)
+train = pd.read_table('../data/train/bill_detail_Train.txt',sep=',',header=-1)
 train.columns = ['id','date','bank_id','x1','x2','x3','x4','x5','spend_num',
                  'x6','x7','x8','x9','x10','state']
 train = train.drop_duplicates()
 train['date'] =((train['date']-5800000000)/86400).astype(int)
 
-loan_time_train = pd.read_csv('D:/SLaughter_code/RawData/loan_time_train.txt',sep=',',header=-1)
+loan_time_train = pd.read_csv('../data/train/loan_time_train.txt',sep=',',header=-1)
 loan_time_train.columns = ['id','loan_time']
 loan_time_train['loan_time'] = ((loan_time_train['loan_time']-5800000000)/86400).astype(int)
 
@@ -413,7 +413,7 @@ result = pd.merge(result, hh, on='id')
 
 #输出bill特征结果
 
-result.to_csv('D:/SLaughter_code/python_feature/train_bill_dup.csv',index=None)
+result.to_csv('../python_feature/train_bill_dup.csv',index=None)
 
 
 

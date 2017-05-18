@@ -15,45 +15,45 @@ def dummy(data, columns):
         data = data.drop(i,1)
     return data
 #提取use_info特征
-use_info_train = pd.read_table('D:/SLaughter_code/RawData/user_info_train.txt',sep=',',header=-1)
+use_info_train = pd.read_table('../data/train/user_info_train.txt',sep=',',header=-1)
 use_info_train.columns = ['id','sex','zhiye','edu','marry','hukou']
 use_info_train = dummy(use_info_train,['sex','zhiye','edu','marry','hukou'])
 
-use_info_test = pd.read_table('D:/SLaughter_code/RawData/user_info_test.txt',sep=',',header=-1)
+use_info_test = pd.read_table('../data/test/user_info_test.txt',sep=',',header=-1)
 use_info_test.columns = ['id','sex','zhiye','edu','marry','hukou']
 use_info_test = dummy(use_info_test,['sex','zhiye','edu','marry','hukou'])
 
 #载入bank，browse，bill表特征数据
-bank_train = pd.read_csv('D:/SLaughter_code/python_feature/bank_train.csv')
-bank_test = pd.read_csv('D:/SLaughter_code/python_feature/bank_test.csv')
+bank_train = pd.read_csv('../python_feature/bank_train.csv')
+bank_test = pd.read_csv('../python_feature/bank_test.csv')
 
 a=[0]
 a.extend([i for i in range(49,57)])
 a.extend([i for i in range(18,48)])
-browse_train1 = pd.read_csv('D:/SLaughter_code/java_feature/onlineTrain.csv').iloc[:,a]
+browse_train1 = pd.read_csv('../java_feature/onlineTrain.csv').iloc[:,a]
 browse_train1 = browse_train1.rename(columns={'userID':'id'})
-browse_train2 = pd.read_csv('D:/SLaughter_code/python_feature/browse_feature_train.csv')
+browse_train2 = pd.read_csv('../python_feature/browse_feature_train.csv')
 browse_train = pd.DataFrame(columns=['id'])
 browse_train.id = browse_train2.id
 browse_train = pd.merge(browse_train, browse_train1, how='left', on='id')
 browse_train = pd.merge(browse_train, browse_train2, how='left', on='id')
 
-browse_test1 = pd.read_csv('D:/SLaughter_code/java_feature/onlineTest.csv').iloc[:,a]
+browse_test1 = pd.read_csv('../java_feature/onlineTest.csv').iloc[:,a]
 browse_test1 = browse_test1.rename(columns={'userID':'id'})
-browse_test2 = pd.read_csv('D:/SLaughter_code/python_feature/browse_feature_test.csv')
+browse_test2 = pd.read_csv('../python_feature/browse_feature_test.csv')
 browse_test = pd.DataFrame(columns=['id'])
 browse_test.id = browse_test2.id
 browse_test = pd.merge(browse_test, browse_test1, how='left', on='id')
 browse_test = pd.merge(browse_test, browse_test2, how='left', on='id')
 
 
-bill_feature_score = pd.read_csv('D:/SLaughter_code/python_feature/bill_feature_score_gain.csv')
+bill_feature_score = pd.read_csv('bill_feature_select/bill_feature_score_gain.csv')
 feature = bill_feature_score['feature'].tolist()[:50]
-bill_train = pd.read_csv('D:/SLaughter_code/python_feature/train.csv')
+bill_train = pd.read_csv('../python_feature/train.csv')
 bill_train = bill_train[bill_train.hasBill==1]
 bill_train = bill_train[['id']+feature]
 
-bill_test = pd.read_csv('D:/SLaughter_code/python_feature/test.csv')
+bill_test = pd.read_csv('../python_feature/test.csv')
 bill_test = bill_test[bill_test.hasBill==1]
 bill_test = bill_test[['id']+feature]
 
@@ -63,16 +63,16 @@ def day(a):
     y = time.strftime('%d',x)
     return y
     
-loan_time_train = pd.read_csv('D:/SLaughter_code/RawData/loan_time_train.txt',sep=',',header=-1)
+loan_time_train = pd.read_csv('../data/train/loan_time_train.txt',sep=',',header=-1)
 loan_time_train.columns = ['id','loan_time']
 loan_time_train['day'] = loan_time_train['loan_time'].apply(day).astype(int)
 loan_time_train['loan_time2'] = ((loan_time_train['loan_time']-5800000000)/86400).astype(int)
 
-train = pd.read_table('D:/SLaughter_code/RawData/overdue_train.txt',sep=',',header=-1)
+train = pd.read_table('../data/train/overdue_train.txt',sep=',',header=-1)
 train.columns = ['id','target']
 
 
-loan_time_test = pd.read_csv('D:/SLaughter_code/RawData/loan_time_test.txt',sep=',',header=-1)
+loan_time_test = pd.read_csv('../data/test/loan_time_test.txt',sep=',',header=-1)
 loan_time_test.columns = ['id','loan_time']
 loan_time_test['day'] = loan_time_test['loan_time'].apply(day).astype(int)
 loan_time_test['loan_time2'] = ((loan_time_test['loan_time']-5800000000)/86400).astype(int)
@@ -149,8 +149,8 @@ test = pd.merge(test, browse_test, how='left', on='id')
 train = pd.merge(train, bank_train, how='left', on='id')
 test = pd.merge(test, bank_test, how='left', on='id')
 
-train.to_csv('D:/SLaughter_code/python_feature/train_all_feature.csv',index=None)
-test.to_csv('D:/SLaughter_code/python_feature/test_all_feature.csv',index=None)
+train.to_csv('../python_feature/train_all_feature.csv',index=None)
+test.to_csv('../python_feature/test_all_feature.csv',index=None)
 
     
 

@@ -7,11 +7,11 @@ Created on Fri Jan 13 15:15:59 2017
 
 import pandas as pd
 
-test = pd.read_csv('D:/SLaughter_code/RawData/bank_detail_test.txt',sep=',',header=None)
+test = pd.read_csv('../data/test/bank_detail_test.txt',sep=',',header=None)
 test.columns=['id','date','trade_type','trade_num','salary']
 test['date'] = (test['date']/86400).astype(int)
 
-loan_time = pd.read_csv('D:/SLaughter_code/RawData/loan_time_test.txt',sep=',',header=None)
+loan_time = pd.read_csv('../data/test/loan_time_test.txt',sep=',',header=None)
 loan_time.columns=['id','loan_time']
 loan_time['loan_time'] = (loan_time['loan_time']/86400).astype(int)
 
@@ -256,9 +256,7 @@ test2 = pd.merge(test2, before_date_loan, on='id')
 test2 = pd.merge(test2, after_date_loan, on='id')
 test2['ab_date_loan'] = test2['after_date_loan']/(test2['before_date_loan']+1)
 
-
-
-test2.to_csv('D:/SLaughter_code/python_feature/bank_test.csv',index=None)
+test2.to_csv('../python_feature/bank_test.csv',index=None)
 
 
 

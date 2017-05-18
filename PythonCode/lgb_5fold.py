@@ -5,7 +5,7 @@ Created on Sat Feb  4 22:13:55 2017
 @author: zhanghuijfls
 """
 
-import lightgbm as lgb
+import lightgbm as xgb
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
@@ -20,10 +20,10 @@ def ks_lgb(preds, train_data):
     fpr, tpr, thre=roc_curve(true, preds, pos_label=1)
     return 'ks', abs(fpr-tpr).max(), True
     
-train = pd.read_csv('D:/SLaughter_code/python_feature/train.csv')
+train = pd.read_csv('../python_feature/train.csv')
 train = train.fillna(-999)
 
-test = pd.read_csv('D:/SLaughter_code/python_feature/test.csv')
+test = pd.read_csv('../python_feature/test.csv')
 test = test.fillna(-999)
 
 test_id = test.id
@@ -47,8 +47,8 @@ feature_score.score = 0
 for x_index, y_index in kf.split(train_x, train_y):
     x_train, x_val = train_x[x_index], train_x[y_index]
     y_train, y_val = train_y[x_index], train_y[y_index]
-    lgb_train = lgb.Dataset(x_train, y_train)
-    lgb_eval = lgb.Dataset(x_val, y_val, reference=lgb_train)
+    lgb_train = xgb.Dataset(x_train, y_train)
+    lgb_eval = xgb.Dataset(x_val, y_val, reference=lgb_train)
     params = {
     'task': 'train',
     'boosting_type': 'gbdt',
@@ -65,8 +65,8 @@ for x_index, y_index in kf.split(train_x, train_y):
     'verbose': 0,
     'is_unbalance':True
     }
-    model = lgb.train(params,lgb_train,num_boost_round=1500,valid_sets=[lgb_train,lgb_eval],
-                    feval=ks_lgb,verbose_eval=100,early_stopping_rounds=300)
+    model = xgb.train(params, lgb_train, num_boost_round=1500, valid_sets=[lgb_train, lgb_eval],
+                      feval=ks_lgb, verbose_eval=100, early_stopping_rounds=300)
     pred_eval = model.predict(x_val,num_iteration=model.best_iteration)
     a = ks_score(y_val, pred_eval)
     auc = roc_auc_score(y_val, pred_eval)
@@ -85,12 +85,12 @@ print(score/5, auc_score/5)
 result1 = pd.DataFrame(columns = ['userid','probability'])
 result1.userid = test_id
 result1.probability = result['end1']
-result1.to_csv('D:/SLaughter_code/result/result_0.458.csv',index=None)
+result1.to_csv('../result/result.csv',index=None)
 
 result1 = pd.DataFrame(columns = ['userid','probability'])
 result1.userid = test_id
 result1.probability = result['end2']
-result1.to_csv('D:/SLaughter_code/result/result_0.4585.csv',index=None)      
+result1.to_csv('../result/result.csv',index=None)
    
     
     
